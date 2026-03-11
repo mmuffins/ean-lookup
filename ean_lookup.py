@@ -202,14 +202,11 @@ async def run(ean: str, output_dir: Path, script_dir: Path) -> int:
     product_type = extract_product_type(product)
     product_name = extract_product_name(raw_title, brand)
 
-    if not product.images:
-        raise RuntimeError("No product image available in API response.")
+    if product.images and product.images[0].url:
+        image_filename = download_image(product.images[0].url, output_dir / "images", ean)
+    else:
+        image_filename = f"{ean}.jpg"
 
-    image_url = product.images[0].url
-    if not image_url:
-        raise RuntimeError("First image entry has no URL.")
-
-    image_filename = download_image(image_url, output_dir / "images", ean)
     markdown = build_markdown(product_type, product_name, brand, image_filename)
     markdown_path = write_markdown_file(output_dir, brand, product_name, markdown)
 
