@@ -1,0 +1,9 @@
+[project]
+name = "ean-lookup"
+version = "1.0.0"
+description = "ean-lookup"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "eandb>=0.9.0",
+]
