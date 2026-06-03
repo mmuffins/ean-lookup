@@ -3,18 +3,15 @@ Downloads product details into obsidian-compatible markdown files.
 
 ## Running
 - Get token from https://ean-db.com/account an put it in a file called `token` in the script folder.
-- Run the script:
-```powershell 
-python ean_lookup.py <ean code> -o ./output
-```
-
+- Load devenv, only needed on linux
 Linux:
 ```bash
-# Enable devenv
 $ devenv shell
-
-# run script
-$ uv run ean_lookup.py [EAN code] -o '[TARGET_DIRECTORY]'
+```
+- Run the script:
+Linux:
+```bash
+$ uv run ean_lookup.py -o '[TARGET_DIRECTORY] [EAN code]'
 ```
 
 ## Updating
