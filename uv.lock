@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "eandb", specifier = ">=0.8.0" }]
+requires-dist = [{ name = "eandb", specifier = ">=0.9.0" }]
 
 [[package]]
 name = "eandb"

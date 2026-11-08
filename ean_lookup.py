@@ -140,11 +140,15 @@ def extract_product_name(raw_title: str | None, brand: str) -> str:
     return name or raw_title.strip()
 
 
-def download_image(url: str, target_dir: Path, ean: str) -> str:
+def product_filename_base(brand: str, product_name: str) -> str:
+    return f"{slugify_filename_part(brand)}-{slugify_filename_part(product_name)}"
+
+
+def download_image(url: str, target_dir: Path, filename_base: str) -> str:
     target_dir.mkdir(parents=True, exist_ok=True)
 
     ext = Path(urlparse(url).path).suffix.lower() or ".jpg"
-    filename = f"{ean}{ext}"
+    filename = f"{filename_base}{ext}"
     target_path = target_dir / filename
 
     req = Request(url, headers={"User-Agent": "python-ean-lookup/1.0"})
@@ -170,7 +174,7 @@ def build_markdown(product_type: str, product_name: str, brand: str, image_filen
 
 def write_markdown_file(output_dir: Path, brand: str, product_name: str, content: str) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
-    filename = f"{slugify_filename_part(brand)}-{slugify_filename_part(product_name)}.md"
+    filename = f"{product_filename_base(brand, product_name)}.md"
     path = output_dir / filename
     path.write_text(content, encoding="utf-8")
     return path
@@ -201,11 +205,12 @@ async def run(ean: str, output_dir: Path, script_dir: Path) -> int:
     brand = extract_brand(product, raw_title)
     product_type = extract_product_type(product)
     product_name = extract_product_name(raw_title, brand)
+    filename_base = product_filename_base(brand, product_name)
 
     if product.images and product.images[0].url:
-        image_filename = download_image(product.images[0].url, output_dir / "images", ean)
+        image_filename = download_image(product.images[0].url, output_dir / "images", filename_base)
     else:
-        image_filename = f"{ean}.jpg"
+        image_filename = f"{filename_base}.jpg"
 
     markdown = build_markdown(product_type, product_name, brand, image_filename)
     markdown_path = write_markdown_file(output_dir, brand, product_name, markdown)
